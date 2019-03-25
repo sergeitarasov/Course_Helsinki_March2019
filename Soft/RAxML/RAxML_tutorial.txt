@@ -1,0 +1,40 @@
+# Simple GTRCAT or GTRGTRGAMMA Models. Change GTRGTRGAMMA to GTRCAT if you want to use the latter
+raxmlHPC -m GTRGAMMA -p 12345 -s dna.phy -# 20 -n T6
+raxmlHPC -m GTRCAT -p 12345 -s dna.phy -# 20 -n T6
+
+# For UNIX use
+./raxmlHPC -m GTRCAT -p 12345 -s dna.phy -# 20 -n T6
+
+# Bootstrapping
+# bootstrap is set via random number seed  -b 12345 
+#and the number of bootstrap replicates we want to compute via -# 100. 
+
+# 1. perform simple run with 20 searches
+./raxmlHPC -m GTRGAMMA -p 12345 -# 20 -s dna.phy -n T13
+
+# 2. generate 100 bootstrap replicates
+./raxmlHPC -m GTRGAMMA -p 12345 -b 12345 -# 100 -s dna.phy -n T14
+
+
+#3. Summarize bootstrap replicated on the best ML tree
+./raxmlHPC -m GTRCAT -p 12345 -f b -t RAxML_bestTree.T13 -z RAxML_bootstrap.T14 -n T15
+
+
+
+
+## Partitioned analysis
+# by gene
+#The partition file now looks like this:
+# DNA, p1=1-30
+# DNA, p2=31-60
+./raxmlHPC -m GTRGAMMA -p 12345 -q PART_gene.txt -s dna.phy -n T21 
+
+
+
+# by codon
+#The partition file now looks like this:
+#DNA, p1=1-60\3,2-60\3
+#DNA, p2=3-60\3
+./raxmlHPC -m GTRGAMMA -p 12345 -q PART_codon.txt -s dna.phy -n T23 
+
+
