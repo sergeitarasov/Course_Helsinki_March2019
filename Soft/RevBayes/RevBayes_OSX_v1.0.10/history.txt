@@ -1,3 +1,63 @@
 a<-5
 a
 q()
+a <- 5
+b<-6
+a+b
+exp(4)
+log(2)
+?exp()
+?log()
+data = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
+data
+data = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
+n_species <- data.ntaxa()
+data = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
+data
+n_species <- data.ntaxa()
+n_species
+n_branches <- 2 * n_species - 3
+n_branches
+taxa <- data.taxa()
+taxa
+mvi = 1
+mni = 1
+pi_prior <- v(1,1,1,1)
+pi_prior
+pi ~ dnDirichlet(pi_prior)
+pi
+moves[mvi++] = mvBetaSimplex(pi, weight=2.0)
+moves[mvi++] = mvDirichletSimplex(pi, weight=1.0)
+moves
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves[mvi++] = mvBetaSimplex(er, weight=3.0)
+moves[mvi++] = mvDirichletSimplex(er, weight=1.5)
+Q := fnGTR(er,pi)
+Q
+out_group = clade("Galeopterus_variegatus")
+topology ~ dnUniformTopology(taxa, outgroup=out_group)
+topology
+moves[mvi++] = mvNNI(topology, weight=5.0)
+moves[mvi++] = mvSPR(topology, weight=1.0)
+for (i in 1:n_branches) {
+  bl[i] ~ dnExponential(10.0)
+  moves[mvi++] = mvScale(bl[i])
+}
+TL := sum(bl)
+TL
+psi := treeAssembly(topology, bl)
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
+seq
+?dnPhyloCTMC
+seq.clamp(data)
+mymodel = model(psi)
+monitors[mni++] = mnScreen(TL, printgen=1000)
+monitors[mni++] = mnFile(psi, filename="output/primates_cytb_GTR.trees", printgen=10)
+monitors[mni++] = mnModel(filename="output/primates_cytb_GTR.log", printgen=10)
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(30000)
+trace = readTreeTrace("output/primates_cytb_GTR.trees")
+map_tree = mapTree(trace,"output/primates_cytb_GTR_MAP.tre")
+consensusTree(trace, file="output/primates.majrule.tre")
+?mvBetaSimplex
