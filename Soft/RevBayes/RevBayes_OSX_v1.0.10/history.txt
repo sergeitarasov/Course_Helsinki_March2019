@@ -61,3 +61,5 @@ trace = readTreeTrace("output/primates_cytb_GTR.trees")
 map_tree = mapTree(trace,"output/primates_cytb_GTR_MAP.tre")
 consensusTree(trace, file="output/primates.majrule.tre")
 ?mvBetaSimplex
+?dnPhyloCTMC
+q()

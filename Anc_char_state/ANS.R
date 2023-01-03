@@ -71,7 +71,19 @@ plotRECON(tree, rate1$states,title="1-rate Matrix")
 rate1
 rate2
 
-
+# make ARD Q matrix for inference
+QinfARD <- matrix(
+  c(
+    0, 1, 2, 3,
+    4,   0,   5,   6,
+    7, 8, 0, 9,
+    10,   11,   12,   0
+  ), 4,4, byrow = T
+)
+diag(QinfARD) <- NA
+taxa <- cbind(hist$tip.label, hist$states)
+rate1 <- rayDISC(hist, taxa, rate.mat=QinfARD, node.states="marginal", 
+                 model="ARD", root.p="maddfitz")
 
 
 #########
